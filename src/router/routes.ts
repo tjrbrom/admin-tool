@@ -5,8 +5,8 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'first-path', component: () => import('pages/PageEntries.vue') },
-      { path: 'second-path', component: () => import('pages/PageSettings.vue') },
+      { path: 'first-path', component: () => import('pages/FirstPage.vue') },
+      { path: 'second-path', component: () => import('pages/SecondPage.vue') },
     ],
     meta: { requiresAuth: true },
   },
