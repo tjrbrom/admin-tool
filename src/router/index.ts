@@ -7,6 +7,7 @@ import {
 } from 'vue-router'
 import routes from './routes'
 import { useUserStore } from 'stores/user'
+import { pinia } from 'boot/pinia'
 
 /*
  * If not building with SSR mode, you can
@@ -17,7 +18,7 @@ import { useUserStore } from 'stores/user'
  * with the Router instance.
  */
 
-export default defineRouter(({ store /*, ssrContext */ }) => {
+export default defineRouter(() => {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
@@ -34,10 +35,10 @@ export default defineRouter(({ store /*, ssrContext */ }) => {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   })
 
-  const userStore = useUserStore(store)
+  const userStore = useUserStore(pinia)
 
   Router.beforeEach((to, from, next) => {
-    console.log(userStore.isSignedIn)
+    console.log('BeforeEach - isSignedIn:', userStore.isSignedIn)
     if (to.matched.some((record) => record.meta.requiresAuth) && !userStore.isSignedIn) {
       next({ name: 'login' })
     } else {

@@ -15,6 +15,9 @@ export const useUserStore = defineStore('user', {
     },
   },
   getters: {
-    isSignedIn: (state) => !!state.token,
+    isSignedIn: (state) => {
+      console.log('isSignedIn getter called. Token:', state.token)
+      return !!state.token
+    },
   },
 })

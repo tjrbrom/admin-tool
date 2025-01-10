@@ -56,7 +56,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Notify } from 'quasar'
 import { useUserStore } from 'stores/user'
-// import { nextTick } from 'vue'
+import { pinia } from 'boot/pinia'
 
 export default {
   name: 'login-page',
@@ -64,7 +64,7 @@ export default {
     const email = ref('')
     const password = ref('')
     const router = useRouter()
-    const userStore = useUserStore()
+    const userStore = useUserStore(pinia)
 
     const handleLogin = async () => {
       if (!email.value || !password.value) {
@@ -118,6 +118,7 @@ export default {
             color: 'positive',
           })
           userStore.setToken(data.token)
+          console.log('isSignedIn after setting token:', userStore.isSignedIn)
           router.push('/')
         } else {
           Notify.create({
