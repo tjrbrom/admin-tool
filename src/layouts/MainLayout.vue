@@ -6,6 +6,7 @@
         <q-toolbar-title>
           <div class="absolute-center">Admin tool</div>
         </q-toolbar-title>
+        <q-btn flat dense round icon="exit_to_app" aria-label="Logout" @click="handleLogout" />
       </q-toolbar>
     </q-header>
 
@@ -32,6 +33,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from 'stores/user'
 import NavLink from 'components/nav/NavLink.vue'
 import type { NavLinkProps } from 'components/nav/NavLink.vue'
 
@@ -49,8 +52,14 @@ const navLinks: NavLinkProps[] = [
 ]
 
 const leftDrawerOpen = ref(false)
+const router = useRouter()
+const userStore = useUserStore()
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
+}
+function handleLogout() {
+  userStore.removeToken()
+  router.push('/login')
 }
 </script>

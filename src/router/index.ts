@@ -38,7 +38,6 @@ export default defineRouter(() => {
   const userStore = useUserStore(pinia)
 
   Router.beforeEach((to, from, next) => {
-    console.log('BeforeEach - isSignedIn:', userStore.isSignedIn)
     if (to.matched.some((record) => record.meta.requiresAuth) && !userStore.isSignedIn) {
       next({ name: 'login' })
     } else {

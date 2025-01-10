@@ -118,7 +118,6 @@ export default {
             color: 'positive',
           })
           userStore.setToken(data.token)
-          console.log('isSignedIn after setting token:', userStore.isSignedIn)
           router.push('/')
         } else {
           Notify.create({
