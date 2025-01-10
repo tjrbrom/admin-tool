@@ -40,14 +40,44 @@ import type { NavLinkProps } from 'components/nav/NavLink.vue'
 
 const navLinks: NavLinkProps[] = [
   {
-    title: 'first',
+    title: 'Store',
     icon: 'settings',
-    link: '/first-path',
+    link: '/store',
   },
   {
-    title: 'sec',
+    title: 'Payments',
     icon: 'settings',
-    link: '/second-path',
+    link: '/payments',
+  },
+  {
+    title: 'Accounts',
+    icon: 'settings',
+    link: '/accounts',
+  },
+  {
+    title: 'Tasks',
+    icon: 'settings',
+    link: '/tasks',
+  },
+  {
+    title: 'Ranks',
+    icon: 'settings',
+    link: '/ranks',
+  },
+  {
+    title: 'Communication',
+    icon: 'settings',
+    link: '/communication',
+  },
+  {
+    title: 'Math',
+    icon: 'settings',
+    link: '/math',
+  },
+  {
+    title: 'General Configuration',
+    icon: 'settings',
+    link: '/general-config',
   },
 ]
 
