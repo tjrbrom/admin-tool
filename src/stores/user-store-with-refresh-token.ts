@@ -22,26 +22,25 @@ export const useUserStore = defineStore('user', {
           body: JSON.stringify({ refreshToken: this.refreshToken }),
         })
 
+        const data = await response.json()
         if (!response.ok) {
-          throw new Error('Failed to refresh token')
+          throw new Error(data.message || 'Failed to refresh token')
         }
-
-        const { accessToken, refreshToken } = await response.json()
-        this.accessToken = accessToken
-        this.refreshToken = refreshToken
+        this.accessToken = data.accessToken
+        this.refreshToken = data.refreshToken
 
         sessionStorage.setItem(
           'user-credentials',
           JSON.stringify({
             userId: this.userId,
-            accessToken,
-            refreshToken,
+            accessToken: this.accessToken,
+            refreshToken: this.refreshToken,
           }),
         )
       } catch (error) {
         console.error('Token refresh failed:', error)
         this.clearCredentials()
-        throw new Error('Failed to refresh token. Please log in again.')
+        throw error
       }
     },
 
