@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
-  state: () => ({
-    userId: null as string | null,
-    accessToken: null as string | null,
-    refreshToken: null as string | null,
-  }),
+  state: () => {
+    const savedCredentials = sessionStorage.getItem('user-credentials')
+    if (savedCredentials) {
+      const { userId, accessToken, refreshToken } = JSON.parse(savedCredentials)
+      return { userId, accessToken, refreshToken }
+    }
+    return { userId: null, accessToken: null, refreshToken: null }
+  },
   actions: {
     async refreshAccessToken() {
       if (!this.refreshToken) {
