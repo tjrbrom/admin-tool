@@ -6,7 +6,7 @@ import {
   createWebHistory,
 } from 'vue-router'
 import routes from './routes'
-import { useUserStore } from 'stores/user'
+import { useUserStore } from 'src/stores/user-store'
 import { pinia } from 'boot/pinia'
 
 /*

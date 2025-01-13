@@ -55,7 +55,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Notify } from 'quasar'
-import { useUserStore } from 'stores/user'
+import { useUserStore } from 'src/stores/user-store'
 import { pinia } from 'boot/pinia'
 
 export default {

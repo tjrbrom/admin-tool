@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from 'stores/user'
+import { useUserStore } from 'src/stores/user-store'
 import NavLink from 'components/nav/NavLink.vue'
 import type { NavLinkProps } from 'components/nav/NavLink.vue'
 
