@@ -50,6 +50,15 @@ export const useUserStore = defineStore('user', {
     async makeAuthenticatedRequest(input: RequestInfo, init?: RequestInit) {
       // eslint-disable-next-line no-useless-catch
       try {
+        if (this.accessToken && (await this.isAccessTokenExpired())) {
+          try {
+            await this.refreshAccessToken()
+          } catch (refreshError) {
+            this.clearCredentials()
+            throw refreshError
+          }
+        }
+
         const headers = {
           ...init?.headers,
           Authorization: `Bearer ${this.accessToken}`,
@@ -78,12 +87,23 @@ export const useUserStore = defineStore('user', {
         throw error
       }
     },
+    async isAccessTokenExpired(): Promise<boolean> {
+      if (!this.accessToken) return true
 
+      const payload = JSON.parse(atob(this.accessToken.split('.')[1]))
+      const isExpired = payload.exp * 1000 < Date.now()
+      return isExpired
+    },
     clearCredentials() {
       this.userId = null
       this.accessToken = null
       this.refreshToken = null
       sessionStorage.removeItem('user-credentials')
+    },
+  },
+  getters: {
+    isSignedIn: (state) => {
+      return !!state.accessToken
     },
   },
 })
