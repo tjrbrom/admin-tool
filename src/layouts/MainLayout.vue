@@ -21,7 +21,27 @@
       <q-list>
         <q-item-label class="text-white" header> Navigation </q-item-label>
 
-        <NavLink v-for="link in navLinks" :key="link.title" v-bind="link" />
+        <q-expansion-item class="text-white" label="Users" icon="settings" expand-separator>
+          <q-item clickable @click="navigate('/accounts')" class="q-pl-lg">
+            <q-item-section avatar>
+              <q-icon name="double_arrow" />
+            </q-item-section>
+            <q-item-section> Accounts </q-item-section>
+          </q-item>
+        </q-expansion-item>
+        <q-expansion-item
+          class="text-white"
+          label="General Configuration"
+          icon="settings"
+          expand-separator
+        >
+          <q-item clickable @click="navigate('/general-config')" class="q-pl-lg">
+            <q-item-section avatar>
+              <q-icon name="double_arrow" />
+            </q-item-section>
+            <q-item-section> General Configuration </q-item-section>
+          </q-item>
+        </q-expansion-item>
       </q-list>
     </q-drawer>
 
@@ -35,56 +55,14 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from 'src/stores/user-store'
-import NavLink from 'components/nav/NavLink.vue'
-import type { NavLinkProps } from 'components/nav/NavLink.vue'
-
-const navLinks: NavLinkProps[] = [
-  {
-    title: 'Store',
-    icon: 'settings',
-    link: '/store',
-  },
-  {
-    title: 'Payments',
-    icon: 'settings',
-    link: '/payments',
-  },
-  {
-    title: 'Accounts',
-    icon: 'settings',
-    link: '/accounts',
-  },
-  {
-    title: 'Tasks',
-    icon: 'settings',
-    link: '/tasks',
-  },
-  {
-    title: 'Ranks',
-    icon: 'settings',
-    link: '/ranks',
-  },
-  {
-    title: 'Communication',
-    icon: 'settings',
-    link: '/communication',
-  },
-  {
-    title: 'Math',
-    icon: 'settings',
-    link: '/math',
-  },
-  {
-    title: 'General Configuration',
-    icon: 'settings',
-    link: '/general-config',
-  },
-]
 
 const leftDrawerOpen = ref(false)
 const router = useRouter()
 const userStore = useUserStore()
 
+function navigate(link: string) {
+  router.push(link)
+}
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
