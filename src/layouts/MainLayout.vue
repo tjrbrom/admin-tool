@@ -22,11 +22,17 @@
         <q-item-label class="text-white" header> Navigation </q-item-label>
 
         <q-expansion-item class="text-white" label="Users" icon="settings" expand-separator>
-          <q-item clickable @click="navigate('/accounts')" class="q-pl-lg">
+          <q-item clickable @click="navigate('/accounts')" class="q-pl-lg light-green-bg">
             <q-item-section avatar>
               <q-icon name="double_arrow" />
             </q-item-section>
             <q-item-section> Accounts </q-item-section>
+          </q-item>
+          <q-item clickable @click="navigate('/other')" class="q-pl-lg light-green-bg">
+            <q-item-section avatar>
+              <q-icon name="double_arrow" />
+            </q-item-section>
+            <q-item-section> Other </q-item-section>
           </q-item>
         </q-expansion-item>
         <q-expansion-item
@@ -35,7 +41,7 @@
           icon="settings"
           expand-separator
         >
-          <q-item clickable @click="navigate('/general-config')" class="q-pl-lg">
+          <q-item clickable @click="navigate('/general-config')" class="q-pl-lg light-green-bg">
             <q-item-section avatar>
               <q-icon name="double_arrow" />
             </q-item-section>
@@ -71,3 +77,10 @@ function handleLogout() {
   router.push('/login')
 }
 </script>
+
+<style scoped>
+.light-green-bg {
+  background-color: #5a9f68;
+  border-radius: 4px;
+}
+</style>

@@ -8,5 +8,5 @@ export type Player = {
   premium: boolean
   banned: boolean
   lastLoginAt: number // timestamp in millis or epoch second
-  createdAt: number // >> >>
+  createdAt: number
 }
