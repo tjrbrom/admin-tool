@@ -23,6 +23,7 @@
         class="q-mr-md select-width"
         emit-value
         map-options
+        clearable
       />
       <q-select
         v-model="searchQuery.country"
@@ -32,6 +33,7 @@
         class="q-mr-md select-width"
         emit-value
         map-options
+        clearable
       />
       <q-select
         v-model="searchQuery.premium"
@@ -41,6 +43,7 @@
         class="q-mr-md select-width"
         emit-value
         map-options
+        clearable
       />
       <q-select
         v-model="searchQuery.banned"
