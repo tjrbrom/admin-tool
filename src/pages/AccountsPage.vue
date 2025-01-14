@@ -2,12 +2,46 @@
   <q-page class="q-pa-none">
     <div class="q-mb-md row full-width">
       <q-input
-        v-model="searchQuery"
+        v-model="searchQuery.userId"
         debounce="300"
-        label="Search for an account"
+        label="Search by User ID"
         outlined
         class="q-mr-md"
-        :placeholder="'Search by account name'"
+      />
+      <q-input
+        v-model="searchQuery.name"
+        debounce="300"
+        label="Search by Player Name"
+        outlined
+        class="q-mr-md"
+      />
+      <q-input
+        v-model="searchQuery.gender"
+        debounce="300"
+        label="Search by Gender"
+        outlined
+        class="q-mr-md"
+      />
+      <q-input
+        v-model="searchQuery.country"
+        debounce="300"
+        label="Search by Country"
+        outlined
+        class="q-mr-md"
+      />
+      <q-input
+        v-model="searchQuery.premium"
+        debounce="300"
+        label="Search by Premium"
+        outlined
+        class="q-mr-md"
+      />
+      <q-input
+        v-model="searchQuery.banned"
+        debounce="300"
+        label="Search by Banned"
+        outlined
+        class="q-mr-md"
       />
     </div>
     <q-table
@@ -207,8 +241,6 @@ const players = ref<Player[]>([
   },
 ])
 
-const searchQuery = ref('')
-
 const columns = ref([
   {
     name: 'userId',
@@ -268,9 +300,42 @@ const columns = ref([
   },
 ])
 
+const searchQuery = ref({
+  userId: '',
+  name: '',
+  gender: '',
+  country: '',
+  premium: '',
+  banned: '',
+})
+
 const filteredPlayers = computed(() => {
-  return players.value.filter((player) =>
-    player.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
-  )
+  return players.value.filter((player) => {
+    const matchesUserId = searchQuery.value.userId
+      ? player.userId.includes(searchQuery.value.userId)
+      : true
+    const matchesName = searchQuery.value.name ? player.name.includes(searchQuery.value.name) : true
+    const matchesGender = searchQuery.value.gender
+      ? player.gender.includes(searchQuery.value.gender)
+      : true
+    const matchesCountry = searchQuery.value.country
+      ? player.country.includes(searchQuery.value.country)
+      : true
+    const matchesPremium = searchQuery.value.premium
+      ? String(player.premium).includes(searchQuery.value.premium)
+      : true
+    const matchesBanned = searchQuery.value.banned
+      ? String(player.banned).includes(searchQuery.value.banned)
+      : true
+
+    return (
+      matchesUserId &&
+      matchesName &&
+      matchesGender &&
+      matchesCountry &&
+      matchesPremium &&
+      matchesBanned
+    )
+  })
 })
 </script>
