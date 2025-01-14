@@ -6,21 +6,21 @@
         debounce="300"
         label="Search by User ID"
         outlined
-        class="q-mr-md"
+        class="q-mr-md select-width"
       />
       <q-input
         v-model="searchQuery.name"
         debounce="300"
         label="Search by Player Name"
         outlined
-        class="q-mr-md"
+        class="q-mr-md select-width"
       />
       <q-select
         v-model="searchQuery.gender"
         :options="genderOptions"
         label="Search by Gender"
         outlined
-        class="q-mr-md"
+        class="q-mr-md select-width"
         emit-value
         map-options
       />
@@ -29,23 +29,28 @@
         :options="countries"
         label="Search by Country"
         outlined
-        class="q-mr-md"
+        class="q-mr-md select-width"
         emit-value
         map-options
       />
-      <q-input
+      <q-select
         v-model="searchQuery.premium"
-        debounce="300"
+        :options="premiumOptions"
         label="Search by Premium"
         outlined
-        class="q-mr-md"
+        class="q-mr-md select-width"
+        emit-value
+        map-options
       />
-      <q-input
+      <q-select
         v-model="searchQuery.banned"
-        debounce="300"
+        :options="bannedOptions"
         label="Search by Banned"
         outlined
-        class="q-mr-md"
+        class="q-mr-md select-width"
+        emit-value
+        map-options
+        clearable
       />
     </div>
     <q-table
@@ -61,6 +66,16 @@
 <script setup lang="ts">
 import type { Player } from 'src/model/Player'
 import { ref, computed } from 'vue'
+
+const premiumOptions = ref([
+  { label: 'Yes', value: true },
+  { label: 'No', value: false },
+])
+
+const bannedOptions = ref([
+  { label: 'Yes', value: true },
+  { label: 'No', value: false },
+])
 
 const genderOptions = ref([
   { label: 'Male', value: 'Male' },
@@ -571,8 +586,8 @@ const searchQuery = ref({
   name: '',
   gender: '',
   country: '',
-  premium: '',
-  banned: '',
+  premium: null,
+  banned: null,
 })
 
 const filteredPlayers = computed(() => {
@@ -589,12 +604,10 @@ const filteredPlayers = computed(() => {
     const matchesCountry = searchQuery.value.country
       ? player.country == searchQuery.value.country
       : true
-    const matchesPremium = searchQuery.value.premium
-      ? String(player.premium).toLowerCase().includes(searchQuery.value.premium.toLowerCase())
-      : true
-    const matchesBanned = searchQuery.value.banned
-      ? String(player.banned).toLowerCase().includes(searchQuery.value.banned.toLowerCase())
-      : true
+    const matchesPremium =
+      searchQuery.value.premium !== null ? player.premium == searchQuery.value.premium : true
+    const matchesBanned =
+      searchQuery.value.banned !== null ? player.banned == searchQuery.value.banned : true
 
     return (
       matchesUserId &&
@@ -607,3 +620,8 @@ const filteredPlayers = computed(() => {
   })
 })
 </script>
+<style>
+.select-width {
+  width: 200px;
+}
+</style>
