@@ -57,13 +57,14 @@
       />
     </div>
     <q-table
-      :rows="filteredPlayers"
-      :columns="columns"
-      row-key="id"
-      class="full-width"
-      :pagination="{ rowsPerPage: 10 }"
-    />
-  </q-page>
+        :rows="filteredPlayers"
+        :columns="columns"
+        row-key="id"
+        class="full-width"
+        v-model:pagination="pagination"
+        @update:pagination="fetchFilteredPlayers"
+      />
+    </q-page>
 </template>
 
 <script setup lang="ts">
@@ -84,7 +85,6 @@ const bannedOptions = ref([
 ])
 
 const genderOptions = ref([
-  { label: 'None', value: 'none' },
   { label: 'Male', value: 'male' },
   { label: 'Female', value: 'female' },
   { label: 'Non Binary', value: 'non_binary' },
@@ -152,6 +152,11 @@ const columns = ref([
   },
 ])
 
+const pagination = ref({
+  page: 1,
+  rowsPerPage: 10,
+})
+
 const searchQuery = ref<PlayerQuery>({
   userId: null,
   name: null,
@@ -159,11 +164,13 @@ const searchQuery = ref<PlayerQuery>({
   country: null,
   premium: null,
   banned: null,
+  limit: pagination.value.rowsPerPage,
 })
 
 const filteredPlayers = ref<Player[]>([])
 
 const fetchFilteredPlayers = async() => {
+  searchQuery.value.limit = pagination.value.rowsPerPage // Dynamically update the limit
   const response = await fetch('http://localhost:3344/admin/players', {
     method: 'POST',
     headers: {
@@ -172,24 +179,7 @@ const fetchFilteredPlayers = async() => {
     body: JSON.stringify(searchQuery.value),
   })
   const data: Player[] = await response.json()
-
-  filteredPlayers.value = data.filter((player) => {
-    const userId = searchQuery.value.userId
-    const name = searchQuery.value.name
-    const gender = searchQuery.value.gender
-    const country = searchQuery.value.country
-    const premium = searchQuery.value.premium
-    const banned = searchQuery.value.banned
-
-    const matchesUserId = userId ? player.userId  == userId : true
-    const matchesName = name ? player.name.toLowerCase().includes(name.toLowerCase()) : true
-    const matchesGender = gender ? player.gender == gender : true
-    const matchesCountry = country ? player.country == country : true
-    const matchesPremium = premium !== null ? player.premium == premium : true
-    const matchesBanned = banned !== null ? player.banned == banned : true
-
-    return matchesUserId && matchesName && matchesGender && matchesCountry && matchesPremium && matchesBanned
-  })
+  filteredPlayers.value = data
 }
 
 watchEffect(() => {
