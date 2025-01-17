@@ -5,5 +5,6 @@ export type PlayerQuery = {
   country: string | null;
   premium: boolean | null;
   banned: boolean | null;
+  createdAt: number | null;
   limit: number | null;
 }

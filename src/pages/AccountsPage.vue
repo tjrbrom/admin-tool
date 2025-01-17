@@ -57,12 +57,12 @@
       />
     </div>
     <q-table
+        flat bordered
         :rows="filteredPlayers"
         :columns="columns"
         row-key="id"
-        class="full-width"
-        v-model:pagination="pagination"
-        @update:pagination="fetchFilteredPlayers"
+        v-model:pagination="paginationRef"
+        @request="onPaginationRequest"
       />
     </q-page>
 </template>
@@ -73,6 +73,37 @@ import type { PlayerQuery } from 'src/model/PlayerQuery'
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
 import { ref, watchEffect } from 'vue'
+
+interface Pagination {
+  page: number;
+  rowsPerPage: number;
+  sortBy?: string | string[];
+  descending?: boolean;
+}
+
+interface RequestProps {
+  pagination: Pagination;
+  filter?: Record<string, unknown>;
+}
+
+function onPaginationRequest (props: RequestProps) {
+  const { page, rowsPerPage } = props.pagination
+
+  console.log(page)
+  console.log(rowsPerPage)
+
+  paginationRef.value.page = page
+  paginationRef.value.rowsPerPage = rowsPerPage
+
+  const lastPlayer = filteredPlayers.value[filteredPlayers.value.length - 1];
+  if (lastPlayer) {
+    searchQuery.value.createdAt = lastPlayer.createdAt;
+  } else {
+    searchQuery.value.createdAt = null;
+  }
+
+  fetchFilteredPlayers()
+}
 
 const premiumOptions = ref([
   { label: 'Yes', value: true },
@@ -152,9 +183,10 @@ const columns = ref([
   },
 ])
 
-const pagination = ref({
+const paginationRef = ref({
   page: 1,
   rowsPerPage: 10,
+  rowsNumber: 0,
 })
 
 const searchQuery = ref<PlayerQuery>({
@@ -164,22 +196,44 @@ const searchQuery = ref<PlayerQuery>({
   country: null,
   premium: null,
   banned: null,
-  limit: pagination.value.rowsPerPage,
+  createdAt: null,
+  limit: paginationRef.value.rowsPerPage,
 })
 
 const filteredPlayers = ref<Player[]>([])
 
 const fetchFilteredPlayers = async() => {
-  searchQuery.value.limit = pagination.value.rowsPerPage // Dynamically update the limit
-  const response = await fetch('http://localhost:3344/admin/players', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(searchQuery.value),
-  })
-  const data: Player[] = await response.json()
-  filteredPlayers.value = data
+  searchQuery.value.limit = paginationRef.value.rowsPerPage
+  try {
+    const [playersResponse, countResponse] = await Promise.all([
+      fetch('http://localhost:3344/admin/players', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchQuery.value),
+      }),
+      fetch('http://localhost:3344/admin/players/count', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    ])
+
+    if (playersResponse.ok && countResponse.ok) {
+      filteredPlayers.value = await playersResponse.json()
+      paginationRef.value.rowsNumber = await countResponse.json()
+    } else {
+      console.error(
+        'Error fetching data:',
+        playersResponse.statusText,
+        countResponse.statusText
+      )
+    }
+  } catch (error) {
+    console.error('Error fetching players or count:', error)
+  }
 }
 
 watchEffect(() => {
