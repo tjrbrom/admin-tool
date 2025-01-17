@@ -89,20 +89,10 @@ interface RequestProps {
 function onPaginationRequest (props: RequestProps) {
   const { page, rowsPerPage } = props.pagination
 
-  console.log(page)
-  console.log(rowsPerPage)
-
   paginationRef.value.page = page
   paginationRef.value.rowsPerPage = rowsPerPage
 
-  const lastPlayer = filteredPlayers.value[filteredPlayers.value.length - 1];
-  if (lastPlayer) {
-    searchQuery.value.createdAt = lastPlayer.createdAt;
-  } else {
-    searchQuery.value.createdAt = null;
-  }
-
-  fetchFilteredPlayers()
+  fetchPlayersForPaging()
 }
 
 const premiumOptions = ref([
@@ -203,6 +193,41 @@ const searchQuery = ref<PlayerQuery>({
 const filteredPlayers = ref<Player[]>([])
 
 const fetchFilteredPlayers = async() => {
+  searchQuery.value.limit = paginationRef.value.rowsPerPage
+  try {
+    const [playersResponse, countResponse] = await Promise.all([
+      fetch('http://localhost:3344/admin/players', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchQuery.value),
+      }),
+      fetch('http://localhost:3344/admin/players/count', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    ])
+
+    if (playersResponse.ok && countResponse.ok) {
+      filteredPlayers.value = await playersResponse.json()
+      paginationRef.value.rowsNumber = await countResponse.json()
+      paginationRef.value.page = 1
+    } else {
+      console.error(
+        'Error fetching data:',
+        playersResponse.statusText,
+        countResponse.statusText
+      )
+    }
+  } catch (error) {
+    console.error('Error fetching players or count:', error)
+  }
+}
+
+const fetchPlayersForPaging = async() => {
   searchQuery.value.limit = paginationRef.value.rowsPerPage
   try {
     const [playersResponse, countResponse] = await Promise.all([
