@@ -89,6 +89,10 @@ interface RequestProps {
 function onPaginationRequest (props: RequestProps) {
   const { page, rowsPerPage } = props.pagination
 
+  if (paginationRef.value.page > page) {
+    searchQuery.value.isPreviousPage = true
+  }
+
   paginationRef.value.page = page
   paginationRef.value.rowsPerPage = rowsPerPage
 
@@ -188,6 +192,7 @@ const searchQuery = ref<PlayerQuery>({
   banned: null,
   createdAt: null,
   limit: paginationRef.value.rowsPerPage,
+  isPreviousPage: null,
 })
 
 const filteredPlayers = ref<Player[]>([])
@@ -229,6 +234,16 @@ const fetchFilteredPlayers = async() => {
 
 const fetchPlayersForPaging = async() => {
   searchQuery.value.limit = paginationRef.value.rowsPerPage
+
+  // Determine createdAt based on page navigation
+  if (filteredPlayers.value.length > 0) {
+    if (searchQuery.value.isPreviousPage) {
+      searchQuery.value.createdAt = filteredPlayers.value[0]?.createdAt || null;
+    } else {
+      searchQuery.value.createdAt = filteredPlayers.value[filteredPlayers.value.length - 1]?.createdAt || null;
+    }
+  }
+
   try {
     const [playersResponse, countResponse] = await Promise.all([
       fetch('http://localhost:3344/admin/players', {
@@ -248,6 +263,9 @@ const fetchPlayersForPaging = async() => {
 
     if (playersResponse.ok && countResponse.ok) {
       filteredPlayers.value = await playersResponse.json()
+      if (searchQuery.value.isPreviousPage) {
+        filteredPlayers.value.reverse()
+      }
       paginationRef.value.rowsNumber = await countResponse.json()
     } else {
       console.error(

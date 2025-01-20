@@ -7,4 +7,5 @@ export type PlayerQuery = {
   banned: boolean | null;
   createdAt: number | null;
   limit: number | null;
+  isPreviousPage: boolean | null;
 }
