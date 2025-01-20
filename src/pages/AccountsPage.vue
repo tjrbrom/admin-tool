@@ -233,38 +233,35 @@ interface RequestProps {
 function onPaginationRequest (props: RequestProps) {
   const { page, rowsPerPage } = props.pagination
 
-  console.log("onPaginationRequest")
-
-  // if (paginationRef.value.rowsPerPage != rowsPerPage) {
-  //   fetchPlayersForPaging()
-  //   return
-  // }
-
-  if (paginationRef.value.page > page) {
-    searchQuery.value.isPreviousPage = true
+  if (paginationRef.value.rowsPerPage != rowsPerPage) {
+    paginationRef.value.page = page
+    paginationRef.value.rowsPerPage = rowsPerPage
+    console.log("fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage")
+    fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage()
+    return
   }
 
-  paginationRef.value.page = page
-  paginationRef.value.rowsPerPage = rowsPerPage
-
-  console.log("rowsPerPage: " + rowsPerPage)
-
-  fetchPlayersForPaging()
+  if (paginationRef.value.page > page) {
+    paginationRef.value.page = page
+    searchQuery.value.isPreviousPage = true
+    console.log("fetchPlayersForPaging_casePreviousPage")
+    fetchPlayersForPaging_casePreviousPage()
+  } else {
+    paginationRef.value.page = page
+    searchQuery.value.isPreviousPage = false
+    console.log("fetchPlayersForPaging_caseNextPage")
+    fetchPlayersForPaging_caseNextPage()
+  }
 }
 
-const fetchPlayersForPaging = async() => {
-  console.log("fetchPlayersForPaging")
-
+const fetchPlayersForPaging_casePreviousPage = async() => {
   isPaging.value = true;
   searchQuery.value.limit = paginationRef.value.rowsPerPage
 
   // Determine createdAt based on page navigation
   if (filteredPlayers.value.length > 0) {
-    if (searchQuery.value.isPreviousPage) {
-      searchQuery.value.createdAt = filteredPlayers.value[0]?.createdAt || null;
-    } else {
-      searchQuery.value.createdAt = filteredPlayers.value[filteredPlayers.value.length - 1]?.createdAt || null;
-    }
+    console.log(searchQuery.value)
+    searchQuery.value.createdAt = filteredPlayers.value[0]?.createdAt || null;
   } else {
     searchQuery.value.createdAt = null;
   }
@@ -288,9 +285,98 @@ const fetchPlayersForPaging = async() => {
 
     if (playersResponse.ok && countResponse.ok) {
       filteredPlayers.value = await playersResponse.json()
-      if (searchQuery.value.isPreviousPage) {
-        filteredPlayers.value.reverse()
-      }
+      filteredPlayers.value.reverse()
+      paginationRef.value.rowsNumber = await countResponse.json()
+    } else {
+      console.error(
+        'Error fetching data:',
+        playersResponse.statusText,
+        countResponse.statusText
+      )
+    }
+  } catch (error) {
+    console.error("Error fetching players or count:", error);
+  } finally {
+    isPaging.value = false;
+  }
+}
+
+const fetchPlayersForPaging_caseNextPage = async() => {
+  isPaging.value = true;
+  searchQuery.value.limit = paginationRef.value.rowsPerPage
+
+  // Determine createdAt based on page navigation
+  if (filteredPlayers.value.length > 0) {
+    console.log(searchQuery.value)
+    searchQuery.value.createdAt = filteredPlayers.value[filteredPlayers.value.length - 1]?.createdAt || null;
+  } else {
+    searchQuery.value.createdAt = null;
+  }
+
+  try {
+    const [playersResponse, countResponse] = await Promise.all([
+      fetch('http://localhost:3344/admin/players', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchQuery.value),
+      }),
+      fetch('http://localhost:3344/admin/players/count', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    ])
+
+    if (playersResponse.ok && countResponse.ok) {
+      filteredPlayers.value = await playersResponse.json()
+      paginationRef.value.rowsNumber = await countResponse.json()
+    } else {
+      console.error(
+        'Error fetching data:',
+        playersResponse.statusText,
+        countResponse.statusText
+      )
+    }
+  } catch (error) {
+    console.error("Error fetching players or count:", error);
+  } finally {
+    isPaging.value = false;
+  }
+}
+
+const fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage = async() => {
+  isPaging.value = true;
+  searchQuery.value.limit = paginationRef.value.rowsPerPage
+
+  // Determine createdAt based on page navigation
+  if (filteredPlayers.value.length > 0) {
+    searchQuery.value.createdAt = filteredPlayers.value[0]?.createdAt || null;
+  } else {
+    searchQuery.value.createdAt = null;
+  }
+
+  try {
+    const [playersResponse, countResponse] = await Promise.all([
+      fetch('http://localhost:3344/admin/players', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchQuery.value),
+      }),
+      fetch('http://localhost:3344/admin/players/count', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    ])
+
+    if (playersResponse.ok && countResponse.ok) {
+      filteredPlayers.value = await playersResponse.json()
       paginationRef.value.rowsNumber = await countResponse.json()
     } else {
       console.error(
