@@ -58,13 +58,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from 'src/stores/user-store'
 
 const leftDrawerOpen = ref(false)
 const router = useRouter()
 const userStore = useUserStore()
+// Time for inactivity before auto logout, 20 minutes
+const INACTIVITY_TIMEOUT = 20 * 60 * 1000;
+let inactivityTimer: NodeJS.Timeout | null = null;
 
 function navigate(link: string) {
   router.push(link)
@@ -75,7 +78,29 @@ function toggleLeftDrawer() {
 function handleLogout() {
   userStore.removeToken()
   router.push('/login')
+  clearTimeout(inactivityTimer as NodeJS.Timeout)
 }
+function resetInactivityTimer() {
+  if (inactivityTimer) {
+    clearTimeout(inactivityTimer)
+  }
+  inactivityTimer = setTimeout(handleLogout, INACTIVITY_TIMEOUT)
+}
+function setupActivityListeners() {
+  window.addEventListener('mousemove', resetInactivityTimer)
+  window.addEventListener('keydown', resetInactivityTimer)
+}
+onMounted(() => {
+  setupActivityListeners()
+  resetInactivityTimer()
+})
+onBeforeUnmount(() => {
+  if (inactivityTimer) {
+    clearTimeout(inactivityTimer)
+  }
+  window.removeEventListener('mousemove', resetInactivityTimer)
+  window.removeEventListener('keydown', resetInactivityTimer)
+})
 </script>
 
 <style scoped>
