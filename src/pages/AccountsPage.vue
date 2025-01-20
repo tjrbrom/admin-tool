@@ -149,14 +149,14 @@ const columns = ref([
     label: 'Last Login',
     align: 'center' as 'left' | 'center' | 'right',
     field: 'lastLoginAt',
-    format: (val: string | number | Date) => new Date(val).toLocaleString(),
+    format: (val: string | number | Date) => new Date(val).toISOString(),
   },
   {
     name: 'createdAt',
     label: 'Created At',
     align: 'center' as 'left' | 'center' | 'right',
     field: 'createdAt',
-    format: (val) => new Date(val).toLocaleString(),
+    format: (val) => new Date(val).toISOString(),
   },
 ])
 
