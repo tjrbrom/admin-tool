@@ -72,7 +72,7 @@ import type { Player } from 'src/model/Player'
 import type { PlayerQuery } from 'src/model/PlayerQuery'
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
-import { ref, watchEffect } from 'vue'
+import { ref, watch, onMounted  } from 'vue'
 
 interface Pagination {
   page: number;
@@ -88,6 +88,8 @@ interface RequestProps {
 
 function onPaginationRequest (props: RequestProps) {
   const { page, rowsPerPage } = props.pagination
+
+  console.log("onPaginationRequest")
 
   if (paginationRef.value.page > page) {
     searchQuery.value.isPreviousPage = true
@@ -198,6 +200,7 @@ const searchQuery = ref<PlayerQuery>({
 const filteredPlayers = ref<Player[]>([])
 
 const fetchFilteredPlayers = async() => {
+  console.log("fetchFilteredPlayers")
   searchQuery.value.limit = paginationRef.value.rowsPerPage
   try {
     const [playersResponse, countResponse] = await Promise.all([
@@ -232,7 +235,13 @@ const fetchFilteredPlayers = async() => {
   }
 }
 
+const isPaging = ref(false);
+
 const fetchPlayersForPaging = async() => {
+  console.log("fetchPlayersForPaging")
+
+  isPaging.value = true;
+
   searchQuery.value.limit = paginationRef.value.rowsPerPage
 
   // Determine createdAt based on page navigation
@@ -242,6 +251,8 @@ const fetchPlayersForPaging = async() => {
     } else {
       searchQuery.value.createdAt = filteredPlayers.value[filteredPlayers.value.length - 1]?.createdAt || null;
     }
+  } else {
+    searchQuery.value.createdAt = null;
   }
 
   try {
@@ -275,13 +286,29 @@ const fetchPlayersForPaging = async() => {
       )
     }
   } catch (error) {
-    console.error('Error fetching players or count:', error)
+    console.error("Error fetching players or count:", error);
+  } finally {
+    isPaging.value = false;
   }
 }
 
-watchEffect(() => {
-  fetchFilteredPlayers()
-})
+// trigger fetchFilteredPlayers when search filters are updated
+const onSearchFiltersChanged = () => {
+  if (!isPaging.value) {
+    fetchFilteredPlayers();
+  }
+};
+
+watch(
+  () => searchQuery.value,
+  onSearchFiltersChanged,
+  { deep: true }
+);
+
+onMounted(() => {
+  console.log("Fetching initial data");
+  fetchFilteredPlayers();
+});
 
 </script>
 <style>
