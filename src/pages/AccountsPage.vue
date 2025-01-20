@@ -56,14 +56,22 @@
         clearable
       />
     </div>
-    <q-table
-        flat bordered
-        :rows="filteredPlayers"
-        :columns="columns"
-        row-key="id"
-        v-model:pagination="paginationRef"
-        @request="onPaginationRequest"
-      />
+      <q-table
+          flat bordered
+          :rows="filteredPlayers"
+          :columns="columns"
+          row-key="id"
+          v-model:pagination="paginationRef"
+          @request="onPaginationRequest"
+        >
+        <template v-slot:body-cell-photoUrl="props">
+          <q-img
+            :src="props.row.photoUrl"
+            alt="Player Photo"
+            style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;"
+          />
+        </template>
+      </q-table>
     </q-page>
 </template>
 
@@ -73,33 +81,6 @@ import type { PlayerQuery } from 'src/model/PlayerQuery'
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
 import { ref, watch, onMounted  } from 'vue'
-
-interface Pagination {
-  page: number;
-  rowsPerPage: number;
-  sortBy?: string | string[];
-  descending?: boolean;
-}
-
-interface RequestProps {
-  pagination: Pagination;
-  filter?: Record<string, unknown>;
-}
-
-function onPaginationRequest (props: RequestProps) {
-  const { page, rowsPerPage } = props.pagination
-
-  console.log("onPaginationRequest")
-
-  if (paginationRef.value.page > page) {
-    searchQuery.value.isPreviousPage = true
-  }
-
-  paginationRef.value.page = page
-  paginationRef.value.rowsPerPage = rowsPerPage
-
-  fetchPlayersForPaging()
-}
 
 const premiumOptions = ref([
   { label: 'Yes', value: true },
@@ -135,7 +116,7 @@ const columns = ref([
   },
   {
     name: 'photoUrl',
-    label: 'Photo URL',
+    label: 'Photo',
     align: 'left' as 'left' | 'center' | 'right',
     field: 'photoUrl',
   },
@@ -237,11 +218,44 @@ const fetchFilteredPlayers = async() => {
 
 const isPaging = ref(false);
 
+interface Pagination {
+  page: number;
+  rowsPerPage: number;
+  sortBy?: string | string[];
+  descending?: boolean;
+}
+
+interface RequestProps {
+  pagination: Pagination;
+  filter?: Record<string, unknown>;
+}
+
+function onPaginationRequest (props: RequestProps) {
+  const { page, rowsPerPage } = props.pagination
+
+  console.log("onPaginationRequest")
+
+  // if (paginationRef.value.rowsPerPage != rowsPerPage) {
+  //   fetchPlayersForPaging()
+  //   return
+  // }
+
+  if (paginationRef.value.page > page) {
+    searchQuery.value.isPreviousPage = true
+  }
+
+  paginationRef.value.page = page
+  paginationRef.value.rowsPerPage = rowsPerPage
+
+  console.log("rowsPerPage: " + rowsPerPage)
+
+  fetchPlayersForPaging()
+}
+
 const fetchPlayersForPaging = async() => {
   console.log("fetchPlayersForPaging")
 
   isPaging.value = true;
-
   searchQuery.value.limit = paginationRef.value.rowsPerPage
 
   // Determine createdAt based on page navigation
