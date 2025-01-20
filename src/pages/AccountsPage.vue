@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-none">
-    <div class="q-mb-md row full-width">
+    <div class="q-mb-md row full-width q-pa-md">
       <q-input
         v-model="searchQuery.userId"
         debounce="300"
@@ -328,5 +328,12 @@ onMounted(() => {
 <style>
 .select-width {
   width: 200px;
+  margin-right: 16px;
+}
+.q-mb-md {
+  margin-bottom: 20px;
+}
+.q-pa-md {
+  padding: 16px;
 }
 </style>
