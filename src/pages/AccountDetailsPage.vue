@@ -39,11 +39,12 @@ import type { Player } from 'src/model/Player';
 const route = useRoute();
 const isEditMode = ref(false);
 const playerId = ref(route.query.playerId as string);
+const userId = ref(route.query.userId as string);
 const userData = ref<Player>();
 
 const fetchUserData = async () => {
   try {
-    const response = await fetch(`http://localhost:3344/admin/player?playerId=${playerId.value}`);
+    const response = await fetch(`http://localhost:3344/admin/player?userId=${userId.value}&playerId=${playerId.value}`);
     if (response.ok) {
       userData.value = await response.json();
     } else {
