@@ -3,6 +3,10 @@
     <h2>Account Details</h2>
     <div v-if="userData">
       <div v-if="isEditMode">
+        <p>
+          <strong>Name: </strong>
+          <input v-model="userData.name" />
+        </p>
       </div>
       <div v-else>
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
@@ -50,9 +54,23 @@ const fetchUserData = async () => {
   }
 };
 
+const saveUserData = async () => {
+  try {
+    await fetch(`http://localhost:3344/admin/player/name`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData.value?.name),
+    });
+  } catch (error) {
+    console.error('Error saving user data:', error);
+  }
+};
+
 const toggleEditMode = () => {
   if (isEditMode.value) {
-    console.log("edit mode")
+    saveUserData();
   }
   isEditMode.value = !isEditMode.value;
 };

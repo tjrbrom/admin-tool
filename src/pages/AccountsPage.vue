@@ -56,7 +56,7 @@
         clearable
       />
     </div>
-      <q-table
+      <q-table class="accounts-table-container"
           flat bordered
           :rows="filteredPlayers"
           :columns="columns"
@@ -381,6 +381,13 @@ onMounted(() => {
 
 </script>
 <style>
+.accounts-table-container {
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
 .select-width {
   width: 200px;
   margin-right: 16px;
