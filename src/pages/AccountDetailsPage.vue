@@ -1,23 +1,28 @@
 <template>
-  <div>
+  <div class="account-details-container">
     <h2>Account Details</h2>
-
     <div v-if="userData">
-      <p><strong>User ID:</strong> {{ userData.userId }}</p>
-      <p><strong>Player ID:</strong> {{ userData.id }}</p>
-      <p><strong>Name:</strong> {{ userData.name }}</p>
-      <p><strong>Photo:</strong> {{ userData.photoUrl }}</p>
-      <p><strong>Gender:</strong> {{ userData.gender }}</p>
-      <p><strong>Country:</strong> {{ userData.country }}</p>
-      <p><strong>Premium:</strong> {{ userData.premium }}</p>
-      <p><strong>Banned:</strong> {{ userData.banned }}</p>
-      <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
-      <p><strong>Created At:</strong> {{ new Date(userData.createdAt).toISOString() }}</p>
+      <div v-if="isEditMode">
+      </div>
+      <div v-else>
+        <p><strong>User ID:</strong> {{ userData.userId }}</p>
+        <p><strong>Player ID:</strong> {{ userData.id }}</p>
+        <p><strong>Name:</strong> {{ userData.name }}</p>
+        <p><strong>Photo:</strong> {{ userData.photoUrl }}</p>
+        <p><strong>Gender:</strong> {{ userData.gender }}</p>
+        <p><strong>Country:</strong> {{ userData.country }}</p>
+        <p><strong>Premium:</strong> {{ userData.premium }}</p>
+        <p><strong>Banned:</strong> {{ userData.banned }}</p>
+        <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
+        <p><strong>Created At:</strong> {{ new Date(userData.createdAt).toISOString() }}</p>
+      </div>
     </div>
-
     <div v-else>
       <q-spinner color="primary" />
     </div>
+    <button @click="toggleEditMode">
+      {{ isEditMode ? 'Save Changes' : 'Edit Details' }}
+    </button>
   </div>
 </template>
 
@@ -28,7 +33,7 @@ import { QSpinner } from 'quasar';
 import type { Player } from 'src/model/Player';
 
 const route = useRoute();
-
+const isEditMode = ref(false);
 const playerId = ref(route.query.playerId as string);
 const userData = ref<Player>();
 
@@ -45,10 +50,36 @@ const fetchUserData = async () => {
   }
 };
 
+const toggleEditMode = () => {
+  if (isEditMode.value) {
+    console.log("edit mode")
+  }
+  isEditMode.value = !isEditMode.value;
+};
+
 onMounted(() => {
   fetchUserData();
 });
 </script>
 
 <style>
+.account-details-container {
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+button {
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;
+}
 </style>
