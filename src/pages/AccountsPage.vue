@@ -194,6 +194,12 @@ interface RequestProps {
   filter?: Record<string, unknown>;
 }
 
+// ========================================
+//
+// FUNCTIONS
+//
+// ========================================
+
 function onPaginationRequest (props: RequestProps) {
   const { page, rowsPerPage } = props.pagination
 
