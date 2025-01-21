@@ -76,7 +76,7 @@
             color="primary"
             label="View Details"
             size="sm"
-            @click="goToDetailsPage(props.row)"
+            @click="goToDetailsPage(props.row.userId)"
           />
         </template>
       </q-table>
@@ -351,9 +351,8 @@ const fetchPlayersData = async (query: PlayerQuery) => {
   }
 };
 
-
 const goToDetailsPage = (userId: string) => {
-  router.push({ name: 'accountDetails', query: { userId } });
+  router.push({ name: 'accountDetails', query: { userId: userId } });
 };
 
 // trigger fetchFilteredPlayers when search filters are updated

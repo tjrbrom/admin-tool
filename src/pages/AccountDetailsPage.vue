@@ -5,8 +5,13 @@
     <div v-if="userData">
       <p><strong>User ID:</strong> {{ userData.userId }}</p>
       <p><strong>Name:</strong> {{ userData.name }}</p>
+      <p><strong>Photo:</strong> {{ userData.photoUrl }}</p>
       <p><strong>Gender:</strong> {{ userData.gender }}</p>
       <p><strong>Country:</strong> {{ userData.country }}</p>
+      <p><strong>Premium:</strong> {{ userData.premium }}</p>
+      <p><strong>Banned:</strong> {{ userData.banned }}</p>
+      <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
+      <p><strong>Created At:</strong> {{ new Date(userData.createdAt).toISOString() }}</p>
     </div>
 
     <div v-else>
@@ -28,7 +33,8 @@ const userData = ref<Player>();
 
 const fetchUserData = async () => {
   try {
-    const response = await fetch(`http://localhost:3344/admin/players/${userId.value}`);
+    console.log(userId.value)
+    const response = await fetch(`http://localhost:3344/admin/player?userId=${userId.value}`);
     if (response.ok) {
       userData.value = await response.json();
     } else {
