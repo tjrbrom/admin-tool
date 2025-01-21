@@ -76,7 +76,7 @@
             color="primary"
             label="View Details"
             size="sm"
-            @click="goToDetailsPage(props.row.userId)"
+            @click="goToDetailsPage(props.row.id)"
           />
         </template>
       </q-table>
@@ -124,6 +124,12 @@ const columns = ref([
     label: 'User Id',
     align: 'left' as 'left' | 'center' | 'right',
     field: 'userId',
+  },
+  {
+    name: 'playerId',
+    label: 'Player Id',
+    align: 'left' as 'left' | 'center' | 'right',
+    field: 'id',
   },
   {
     name: 'name',
@@ -185,6 +191,7 @@ const paginationRef = ref({
 
 const searchQuery = ref<PlayerQuery>({
   userId: null,
+  playerId: null,
   name: null,
   gender: null,
   country: null,
@@ -351,8 +358,8 @@ const fetchPlayersData = async (query: PlayerQuery) => {
   }
 };
 
-const goToDetailsPage = (userId: string) => {
-  router.push({ name: 'accountDetails', query: { userId: userId } });
+const goToDetailsPage = (playerId: string) => {
+  router.push({ name: 'accountDetails', query: { playerId: playerId } });
 };
 
 // trigger fetchFilteredPlayers when search filters are updated

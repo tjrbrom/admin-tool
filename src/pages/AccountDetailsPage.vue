@@ -4,6 +4,7 @@
 
     <div v-if="userData">
       <p><strong>User ID:</strong> {{ userData.userId }}</p>
+      <p><strong>Player ID:</strong> {{ userData.id }}</p>
       <p><strong>Name:</strong> {{ userData.name }}</p>
       <p><strong>Photo:</strong> {{ userData.photoUrl }}</p>
       <p><strong>Gender:</strong> {{ userData.gender }}</p>
@@ -28,13 +29,12 @@ import type { Player } from 'src/model/Player';
 
 const route = useRoute();
 
-const userId = ref(route.query.userId as string);
+const playerId = ref(route.query.playerId as string);
 const userData = ref<Player>();
 
 const fetchUserData = async () => {
   try {
-    console.log(userId.value)
-    const response = await fetch(`http://localhost:3344/admin/player?userId=${userId.value}`);
+    const response = await fetch(`http://localhost:3344/admin/player?playerId=${playerId.value}`);
     if (response.ok) {
       userData.value = await response.json();
     } else {

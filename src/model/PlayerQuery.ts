@@ -1,5 +1,6 @@
 export type PlayerQuery = {
   userId: string | null;
+  playerId: string | null;
   name: string | null;
   gender: string | null;
   country: string | null;
