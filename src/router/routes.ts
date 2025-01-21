@@ -8,6 +8,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'store', component: () => import('pages/StorePage.vue') },
       { path: 'payments', component: () => import('pages/PaymentsPage.vue') },
       { path: 'accounts', component: () => import('pages/AccountsPage.vue') },
+      { path: 'accounts/details', name: 'accountDetails', component: () => import('pages/AccountDetailsPage.vue') },
       { path: 'tasks', component: () => import('pages/TasksPage.vue') },
       { path: 'ranks', component: () => import('pages/RanksPage.vue') },
       { path: 'communication', component: () => import('pages/CommunicationPage.vue') },
@@ -21,8 +22,6 @@ const routes: RouteRecordRaw[] = [
     name: 'login',
     component: () => import('pages/LoginPage.vue'),
   },
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),

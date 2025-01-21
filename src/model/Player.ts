@@ -7,6 +7,6 @@ export type Player = {
   country: string
   premium: boolean
   banned: boolean
-  lastLoginAt: number // timestamp in millis or epoch second
+  lastLoginAt: number
   createdAt: number
 }

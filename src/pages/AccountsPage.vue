@@ -71,6 +71,14 @@
             style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;"
           />
         </template>
+        <template v-slot:body-cell-actions="props">
+          <q-btn
+            color="primary"
+            label="View Details"
+            size="sm"
+            @click="goToDetailsPage(props.row)"
+          />
+        </template>
       </q-table>
     </q-page>
 </template>
@@ -81,6 +89,9 @@ import type { PlayerQuery } from 'src/model/PlayerQuery'
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
 import { ref, watch, onMounted  } from 'vue'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const premiumOptions = ref([
   { label: 'Yes', value: true },
@@ -102,6 +113,12 @@ const genderOptions = ref([
 const countriesRef = ref<Country[]>(countries);
 
 const columns = ref([
+  {
+    name: 'actions',
+    label: 'Actions',
+    align: 'center' as 'left' | 'center' | 'right',
+    field: 'actions',
+  },
   {
     name: 'userId',
     label: 'User Id',
@@ -398,6 +415,10 @@ const fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage = async() => {
     isPaging.value = false;
   }
 }
+
+const goToDetailsPage = (userId: string) => {
+  router.push({ name: 'accountDetails', query: { userId } });
+};
 
 // trigger fetchFilteredPlayers when search filters are updated
 const onSearchFiltersChanged = () => {
