@@ -180,42 +180,6 @@ const searchQuery = ref<PlayerQuery>({
 
 const filteredPlayers = ref<Player[]>([])
 
-const fetchFilteredPlayers = async() => {
-  console.log("fetchFilteredPlayers")
-  searchQuery.value.limit = paginationRef.value.rowsPerPage
-  try {
-    const [playersResponse, countResponse] = await Promise.all([
-      fetch('http://localhost:3344/admin/players', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(searchQuery.value),
-      }),
-      fetch('http://localhost:3344/admin/players/count', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }),
-    ])
-
-    if (playersResponse.ok && countResponse.ok) {
-      filteredPlayers.value = await playersResponse.json()
-      paginationRef.value.rowsNumber = await countResponse.json()
-      paginationRef.value.page = 1
-    } else {
-      console.error(
-        'Error fetching data:',
-        playersResponse.statusText,
-        countResponse.statusText
-      )
-    }
-  } catch (error) {
-    console.error('Error fetching players or count:', error)
-  }
-}
-
 const isPaging = ref(false);
 
 interface Pagination {
@@ -254,13 +218,51 @@ function onPaginationRequest (props: RequestProps) {
   }
 }
 
+const fetchFilteredPlayers = async() => {
+  console.log("fetchFilteredPlayers")
+  console.log(searchQuery.value)
+  searchQuery.value.isPreviousPage = false
+  searchQuery.value.limit = paginationRef.value.rowsPerPage
+  searchQuery.value.createdAt = null
+  try {
+    const [playersResponse, countResponse] = await Promise.all([
+      fetch('http://localhost:3344/admin/players', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchQuery.value),
+      }),
+      fetch('http://localhost:3344/admin/players/count', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    ])
+
+    if (playersResponse.ok && countResponse.ok) {
+      filteredPlayers.value = await playersResponse.json()
+      paginationRef.value.rowsNumber = await countResponse.json()
+      paginationRef.value.page = 1
+    } else {
+      console.error(
+        'Error fetching data:',
+        playersResponse.statusText,
+        countResponse.statusText
+      )
+    }
+  } catch (error) {
+    console.error('Error fetching players or count:', error)
+  }
+}
+
 const fetchPlayersForPaging_casePreviousPage = async() => {
   isPaging.value = true;
   searchQuery.value.limit = paginationRef.value.rowsPerPage
 
   // Determine createdAt based on page navigation
   if (filteredPlayers.value.length > 0) {
-    console.log(searchQuery.value)
     searchQuery.value.createdAt = filteredPlayers.value[0]?.createdAt || null;
   } else {
     searchQuery.value.createdAt = null;
@@ -307,7 +309,6 @@ const fetchPlayersForPaging_caseNextPage = async() => {
 
   // Determine createdAt based on page navigation
   if (filteredPlayers.value.length > 0) {
-    console.log(searchQuery.value)
     searchQuery.value.createdAt = filteredPlayers.value[filteredPlayers.value.length - 1]?.createdAt || null;
   } else {
     searchQuery.value.createdAt = null;
@@ -406,7 +407,6 @@ watch(
 );
 
 onMounted(() => {
-  console.log("Fetching initial data");
   fetchFilteredPlayers();
 });
 
