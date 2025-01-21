@@ -247,37 +247,12 @@ const fetchFilteredPlayers = async() => {
   searchQuery.value.isPreviousPage = false
   searchQuery.value.limit = paginationRef.value.rowsPerPage
   searchQuery.value.createdAt = null
-  try {
-    const [playersResponse, countResponse] = await Promise.all([
-      fetch('http://localhost:3344/admin/players', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(searchQuery.value),
-      }),
-      fetch('http://localhost:3344/admin/players/count', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }),
-    ])
 
-    if (playersResponse.ok && countResponse.ok) {
-      filteredPlayers.value = await playersResponse.json()
-      paginationRef.value.rowsNumber = await countResponse.json()
-      paginationRef.value.page = 1
-    } else {
-      console.error(
-        'Error fetching data:',
-        playersResponse.statusText,
-        countResponse.statusText
-      )
-    }
-  } catch (error) {
-    console.error('Error fetching players or count:', error)
-  }
+  const { players, count } = await fetchPlayersData(searchQuery.value);
+
+  filteredPlayers.value = players;
+  paginationRef.value.rowsNumber = count;
+  paginationRef.value.page = 1;
 }
 
 const fetchPlayersForPaging_casePreviousPage = async() => {
@@ -291,39 +266,11 @@ const fetchPlayersForPaging_casePreviousPage = async() => {
     searchQuery.value.createdAt = null;
   }
 
-  try {
-    const [playersResponse, countResponse] = await Promise.all([
-      fetch('http://localhost:3344/admin/players', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(searchQuery.value),
-      }),
-      fetch('http://localhost:3344/admin/players/count', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }),
-    ])
+  const { players, count } = await fetchPlayersData(searchQuery.value);
 
-    if (playersResponse.ok && countResponse.ok) {
-      filteredPlayers.value = await playersResponse.json()
-      filteredPlayers.value.reverse()
-      paginationRef.value.rowsNumber = await countResponse.json()
-    } else {
-      console.error(
-        'Error fetching data:',
-        playersResponse.statusText,
-        countResponse.statusText
-      )
-    }
-  } catch (error) {
-    console.error("Error fetching players or count:", error);
-  } finally {
-    isPaging.value = false;
-  }
+  filteredPlayers.value = players.reverse();
+  paginationRef.value.rowsNumber = count;
+  isPaging.value = false;
 }
 
 const fetchPlayersForPaging_caseNextPage = async() => {
@@ -337,38 +284,11 @@ const fetchPlayersForPaging_caseNextPage = async() => {
     searchQuery.value.createdAt = null;
   }
 
-  try {
-    const [playersResponse, countResponse] = await Promise.all([
-      fetch('http://localhost:3344/admin/players', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(searchQuery.value),
-      }),
-      fetch('http://localhost:3344/admin/players/count', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }),
-    ])
+  const { players, count } = await fetchPlayersData(searchQuery.value);
 
-    if (playersResponse.ok && countResponse.ok) {
-      filteredPlayers.value = await playersResponse.json()
-      paginationRef.value.rowsNumber = await countResponse.json()
-    } else {
-      console.error(
-        'Error fetching data:',
-        playersResponse.statusText,
-        countResponse.statusText
-      )
-    }
-  } catch (error) {
-    console.error("Error fetching players or count:", error);
-  } finally {
-    isPaging.value = false;
-  }
+  filteredPlayers.value = players;
+  paginationRef.value.rowsNumber = count;
+  isPaging.value = false;
 }
 
 const fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage = async() => {
@@ -382,14 +302,28 @@ const fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage = async() => {
     searchQuery.value.createdAt = null;
   }
 
+  const { players, count } = await fetchPlayersData(searchQuery.value);
+
+  filteredPlayers.value = players;
+  paginationRef.value.rowsNumber = count;
+  isPaging.value = false;
+}
+
+const fetchPlayersData = async (query: PlayerQuery) => {
   try {
+    const queryParams = new URLSearchParams();
+    for (const key in query) {
+      if (query[key] !== null && query[key] !== undefined) {
+        queryParams.append(key, String(query[key]));
+      }
+    }
+    console.log(queryParams.toString())
     const [playersResponse, countResponse] = await Promise.all([
-      fetch('http://localhost:3344/admin/players', {
-        method: 'POST',
+      fetch(`http://localhost:3344/admin/players?${queryParams.toString()}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(searchQuery.value),
       }),
       fetch('http://localhost:3344/admin/players/count', {
         method: 'GET',
@@ -397,24 +331,26 @@ const fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage = async() => {
           'Content-Type': 'application/json',
         },
       }),
-    ])
+    ]);
 
     if (playersResponse.ok && countResponse.ok) {
-      filteredPlayers.value = await playersResponse.json()
-      paginationRef.value.rowsNumber = await countResponse.json()
+      const players = await playersResponse.json();
+      const count = await countResponse.json();
+      return { players, count };
     } else {
       console.error(
         'Error fetching data:',
         playersResponse.statusText,
         countResponse.statusText
-      )
+      );
+      return { players: [], count: 0 };
     }
   } catch (error) {
-    console.error("Error fetching players or count:", error);
-  } finally {
-    isPaging.value = false;
+    console.error('Error fetching players or count:', error);
+    return { players: [], count: 0 };
   }
-}
+};
+
 
 const goToDetailsPage = (userId: string) => {
   router.push({ name: 'accountDetails', query: { userId } });
