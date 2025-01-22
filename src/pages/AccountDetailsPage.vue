@@ -41,8 +41,16 @@
             map-options
           />
         </div>
-        <p style="margin-top: 20px;"><strong>Premium:</strong> {{ userData.premium }}</p>
-        <p><strong>Banned:</strong> {{ userData.banned }}</p>
+        <p style="margin-top: 20px;"><strong>Premium: </strong>
+          <span :class="{ 'text-green': userData.premium, 'text-red': !userData.premium }">
+            {{ formatPremium(userData.premium) }}
+          </span>
+        </p>
+        <p><strong>Banned: </strong>
+          <span :class="{ 'text-green': userData.banned, 'text-red': !userData.banned }">
+            {{ formatBanned(userData.banned) }}
+          </span>
+        </p>
         <p><strong>Last Login At:</strong> {{ formatDate(userData.lastLoginAt) }}</p>
         <p><strong>Created At:</strong> {{ formatDate(userData.createdAt) }}</p>
         <button @click="saveUserData">
@@ -59,12 +67,20 @@
         <p><strong>Name:</strong> {{ userData.name }}</p>
         <p><strong>Gender:</strong> {{ userData.gender }}</p>
         <p><strong>Country:</strong> {{ getCountryLabel(userData.country) }}</p>
-        <p><strong>Premium:</strong> {{ formatPremium(userData.premium) }}</p>
-        <p><strong>Banned:</strong> {{ formatBanned(userData.banned) }}</p>
+        <p><strong>Premium: </strong>
+          <span :class="{ 'text-green': userData.premium, 'text-red': !userData.premium }">
+            {{ formatPremium(userData.premium) }}
+          </span>
+        </p>
+        <p><strong>Banned: </strong>
+          <span :class="{ 'text-green': userData.banned, 'text-red': !userData.banned }">
+            {{ formatBanned(userData.banned) }}
+          </span>
+        </p>
         <p><strong>Last Login At:</strong> {{ formatDate(userData.lastLoginAt) }}</p>
         <p><strong>Created At:</strong> {{ formatDate(userData.createdAt) }}</p>
         <button @click="toggleEditMode">
-          'Edit Data'
+          Edit Data
         </button>
       </div>
     </div>
@@ -110,8 +126,6 @@ const fetchUserData = async () => {
       userData.value = {
         ...playerData,
         country: getCountryLabel(playerData.country),
-        premium: formatPremium(playerData.premium),
-        banned: formatBanned(playerData.banned),
       };
     } else {
       console.error('Failed to fetch user data');
@@ -234,6 +248,12 @@ onMounted(() => {
   text-align: center;
   padding-bottom: 10px;
   margin-bottom: 20px;
+}
+.text-green {
+  color: green;
+}
+.text-red {
+  color: red;
 }
 button {
   margin-top: 20px;
