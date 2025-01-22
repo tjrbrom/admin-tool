@@ -81,6 +81,7 @@ import { QSpinner } from 'quasar';
 import type { Player } from 'src/model/Player';
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
+import { getCountryLabel } from 'src/model/countries'
 
 const route = useRoute();
 const isEditMode = ref(false);
@@ -169,11 +170,6 @@ const toggleEditMode = () => {
 
 const handleBackButtonClick = () => {
   isEditMode.value = false;
-};
-
-const getCountryLabel = (countryCode: string) => {
-  const country = countriesOptions.value.find(c => c.value === countryCode);
-  return country ? country.label : countryCode;
 };
 
 onMounted(() => {

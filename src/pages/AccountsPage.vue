@@ -88,6 +88,7 @@ import type { Player } from 'src/model/Player'
 import type { PlayerQuery } from 'src/model/PlayerQuery'
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
+import { getCountryLabel } from 'src/model/countries'
 import { ref, watch, onMounted  } from 'vue'
 import { useRouter } from 'vue-router';
 
@@ -387,11 +388,6 @@ const onSearchFiltersChanged = () => {
   if (!isPaging.value) {
     fetchFilteredPlayers();
   }
-};
-
-const getCountryLabel = (countryCode: string) => {
-  const country = countriesOptions.value.find(c => c.value === countryCode);
-  return country ? country.label : countryCode;
 };
 
 watch(

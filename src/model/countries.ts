@@ -9,3 +9,8 @@ export const countries: Country[] = [
   { label: 'Mexico', value: 'MX' },
   { label: 'Greece', value: 'GR' },
 ];
+
+export const getCountryLabel = (countryCode: string) => {
+  const country = countries.find(c => c.value === countryCode);
+  return country ? country.label : countryCode;
+};
