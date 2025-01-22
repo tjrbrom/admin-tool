@@ -88,6 +88,8 @@ import type { Player } from 'src/model/Player'
 import type { PlayerQuery } from 'src/model/PlayerQuery'
 import type { Country } from 'src/model/countries';
 import { formatDate } from 'src/Utils';
+import { formatPremium } from 'src/Utils';
+import { formatBanned } from 'src/Utils';
 import { countries } from 'src/model/countries'
 import { getCountryLabel } from 'src/model/countries'
 import { ref, watch, onMounted  } from 'vue'
@@ -162,12 +164,14 @@ const columns = ref([
     label: 'Premium',
     align: 'center' as 'left' | 'center' | 'right',
     field: 'premium',
+    format: (val: boolean) => `${formatPremium(val)}`,
   },
   {
     name: 'banned',
     label: 'Banned',
     align: 'center' as 'left' | 'center' | 'right',
     field: 'banned',
+    format: (val: boolean) => `${formatBanned(val)}`,
   },
   {
     name: 'lastLoginAt',
@@ -181,7 +185,7 @@ const columns = ref([
     label: 'Created At',
     align: 'center' as 'left' | 'center' | 'right',
     field: 'createdAt',
-    format: (val) => formatDate(val),
+    format: (val: string | number | Date) => formatDate(val),
   },
 ])
 

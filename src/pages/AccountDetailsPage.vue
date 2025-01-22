@@ -59,8 +59,8 @@
         <p><strong>Name:</strong> {{ userData.name }}</p>
         <p><strong>Gender:</strong> {{ userData.gender }}</p>
         <p><strong>Country:</strong> {{ getCountryLabel(userData.country) }}</p>
-        <p><strong>Premium:</strong> {{ userData.premium }}</p>
-        <p><strong>Banned:</strong> {{ userData.banned }}</p>
+        <p><strong>Premium:</strong> {{ formatPremium(userData.premium) }}</p>
+        <p><strong>Banned:</strong> {{ formatBanned(userData.banned) }}</p>
         <p><strong>Last Login At:</strong> {{ formatDate(userData.lastLoginAt) }}</p>
         <p><strong>Created At:</strong> {{ formatDate(userData.createdAt) }}</p>
         <button @click="toggleEditMode">
@@ -79,6 +79,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { QSpinner } from 'quasar';
 import { formatDate } from 'src/Utils';
+import { formatPremium } from 'src/Utils';
+import { formatBanned } from 'src/Utils';
 import type { Player } from 'src/model/Player';
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
@@ -108,6 +110,8 @@ const fetchUserData = async () => {
       userData.value = {
         ...playerData,
         country: getCountryLabel(playerData.country),
+        premium: formatPremium(playerData.premium),
+        banned: formatBanned(playerData.banned),
       };
     } else {
       console.error('Failed to fetch user data');
@@ -193,8 +197,8 @@ onMounted(() => {
   position: relative;
 }
 .back-button {
-  position: absolute; /* Allow the back button to be placed outside the center */
-  left: 0; /* Aligns the button to the left of the container */
+  position: absolute;
+  left: 0;
   margin-left: 10px;
   padding: 5px 10px;
   background-color: #007bff;
