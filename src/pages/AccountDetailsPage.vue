@@ -187,6 +187,7 @@ const toggleEditMode = () => {
 };
 
 const handleBackButtonClick = () => {
+  fetchUserData()
   isEditMode.value = false;
 };
 
