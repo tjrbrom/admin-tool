@@ -1,6 +1,6 @@
 <template>
   <div class="account-details-container">
-    <h2>Account Details</h2>
+    <h2 class="account-title">Account Details</h2>
     <div v-if="userData">
       <div v-if="isEditMode">
         <p>
@@ -181,6 +181,14 @@ onMounted(() => {
 .select {
   width: 150px;
   margin-left: 10px;
+}
+.account-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
 }
 button {
   margin-top: 20px;
