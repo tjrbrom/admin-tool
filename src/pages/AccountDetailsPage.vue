@@ -1,7 +1,7 @@
 <template>
   <div class="account-details-container">
     <div class="header-container">
-      <button v-if="isEditMode" @click="toggleEditMode" class="back-button">
+      <button v-if="isEditMode" @click="handleBackButtonClick" class="back-button">
         Back
       </button>
       <h2 class="account-title">Account Details</h2>
@@ -45,6 +45,9 @@
         <p><strong>Banned:</strong> {{ userData.banned }}</p>
         <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
         <p><strong>Created At:</strong> {{ new Date(userData.createdAt).toISOString() }}</p>
+        <button @click="saveUserData">
+          'Save Changes'
+        </button>
       </div>
       <div v-else>
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
@@ -60,14 +63,14 @@
         <p><strong>Banned:</strong> {{ userData.banned }}</p>
         <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
         <p><strong>Created At:</strong> {{ new Date(userData.createdAt).toISOString() }}</p>
+        <button @click="toggleEditMode">
+          'Edit Data'
+        </button>
       </div>
     </div>
     <div v-else>
       <q-spinner color="primary" />
     </div>
-    <button @click="toggleEditMode">
-      {{ isEditMode ? 'Save Changes' : 'Edit Details' }}
-    </button>
   </div>
 </template>
 
@@ -161,10 +164,11 @@ const saveUserData = async () => {
 };
 
 const toggleEditMode = () => {
-  if (isEditMode.value) {
-    saveUserData();
-  }
   isEditMode.value = !isEditMode.value;
+};
+
+const handleBackButtonClick = () => {
+  isEditMode.value = false;
 };
 
 const getCountryLabel = (countryCode: string) => {
