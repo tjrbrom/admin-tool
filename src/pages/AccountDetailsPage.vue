@@ -12,8 +12,11 @@
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
         <p><strong>Player ID:</strong> {{ userData.id }}</p>
         <p><strong>Name:</strong> {{ userData.name }}</p>
-        <p><strong>Photo:</strong> {{ userData.photoUrl }}</p>
-        <p><strong>Gender:</strong> {{ userData.gender }}</p>
+        <p>
+          <strong>Photo:</strong>
+          <img :src="userData.photoUrl" alt="Player Photo" class="player-photo" v-if="userData.photoUrl" />
+        </p>
+          <p><strong>Gender:</strong> {{ userData.gender }}</p>
         <p><strong>Country:</strong> {{ userData.country }}</p>
         <p><strong>Premium:</strong> {{ userData.premium }}</p>
         <p><strong>Banned:</strong> {{ userData.banned }}</p>
@@ -67,6 +70,15 @@ const saveUserData = async () => {
         name: userData.value?.name
       }),
     });
+    await fetch(`http://localhost:3344/admin/player/photo/default`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        playerId: userData.value?.id
+      }),
+    });
   } catch (error) {
     console.error('Error saving user data:', error);
   }
@@ -91,6 +103,15 @@ onMounted(() => {
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #ececec;
+}
+.player-photo {
+  display: block;
+  margin-top: 10px;
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ccc;
 }
 button {
   margin-bottom: 20px;
