@@ -14,6 +14,16 @@
             v-model="changeToDefaultPhoto"
           />
         </p>
+        <div class="gender-container">
+          <strong>Gender: </strong>
+          <q-select
+            v-model="userData.gender"
+            :options="genderOptions"
+            class="gender-select"
+            emit-value
+            map-options
+          />
+        </div>
       </div>
       <div v-else>
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
@@ -53,6 +63,13 @@ const playerId = ref(route.query.playerId as string);
 const userId = ref(route.query.userId as string);
 const userData = ref<Player>();
 
+const genderOptions = ref([
+  { label: 'Male', value: 'male' },
+  { label: 'Female', value: 'female' },
+  { label: 'Non Binary', value: 'non_binary' },
+  { label: 'Prefer not to say', value: 'prefer_not_say' },
+])
+
 const fetchUserData = async () => {
   try {
     const response = await fetch(`http://localhost:3344/admin/player?userId=${userId.value}&playerId=${playerId.value}`);
@@ -89,6 +106,16 @@ const saveUserData = async () => {
         }),
       });
     }
+    await fetch(`http://localhost:3344/admin/player/gender`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        playerId: userData.value?.id,
+        gender: userData.value?.gender
+      }),
+    });
   } catch (error) {
     console.error('Error saving user data:', error);
   }
@@ -123,7 +150,16 @@ onMounted(() => {
   object-fit: cover;
   border: 1px solid #ccc;
 }
+.gender-container {
+  display: flex;
+  align-items: center;
+}
+.gender-select {
+  width: 150px;
+  margin-left: 10px;
+}
 button {
+  margin-top: 20px;
   margin-bottom: 20px;
   padding: 10px 15px;
   background-color: #007bff;
