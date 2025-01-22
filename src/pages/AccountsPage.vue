@@ -386,7 +386,7 @@ onMounted(() => {
   margin: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #ececec;
 }
 .select-width {
   width: 200px;

@@ -62,7 +62,10 @@ const saveUserData = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userData.value?.name),
+      body: JSON.stringify({
+        playerId: userData.value?.id,
+        name: userData.value?.name
+      }),
     });
   } catch (error) {
     console.error('Error saving user data:', error);
@@ -87,7 +90,7 @@ onMounted(() => {
   margin: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #ececec;
 }
 button {
   margin-bottom: 20px;
