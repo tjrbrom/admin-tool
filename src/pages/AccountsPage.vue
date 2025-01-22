@@ -132,16 +132,16 @@ const columns = ref([
     field: 'id',
   },
   {
-    name: 'name',
-    label: 'Name',
-    align: 'left' as 'left' | 'center' | 'right',
-    field: 'name',
-  },
-  {
     name: 'photoUrl',
     label: 'Photo',
     align: 'left' as 'left' | 'center' | 'right',
     field: 'photoUrl',
+  },
+  {
+    name: 'name',
+    label: 'Name',
+    align: 'left' as 'left' | 'center' | 'right',
+    field: 'name',
   },
   {
     name: 'gender',
@@ -257,7 +257,12 @@ const fetchFilteredPlayers = async() => {
 
   const { players, count } = await fetchPlayersData(searchQuery.value);
 
-  filteredPlayers.value = players;
+  filteredPlayers.value = players.map((player: { country: string; }) => {
+    return {
+      ...player,
+      country: getCountryLabel(player.country),
+    };
+  });
   paginationRef.value.rowsNumber = count;
   paginationRef.value.page = 1;
 }
@@ -275,7 +280,12 @@ const fetchPlayersForPaging_casePreviousPage = async() => {
 
   const { players, count } = await fetchPlayersData(searchQuery.value);
 
-  filteredPlayers.value = players.reverse();
+  filteredPlayers.value = players.reverse().map((player: { country: string; }) => {
+    return {
+      ...player,
+      country: getCountryLabel(player.country),
+    };
+  });
   paginationRef.value.rowsNumber = count;
   isPaging.value = false;
 }
@@ -293,7 +303,12 @@ const fetchPlayersForPaging_caseNextPage = async() => {
 
   const { players, count } = await fetchPlayersData(searchQuery.value);
 
-  filteredPlayers.value = players;
+  filteredPlayers.value = players.map((player: { country: string; }) => {
+    return {
+      ...player,
+      country: getCountryLabel(player.country),
+    };
+  });
   paginationRef.value.rowsNumber = count;
   isPaging.value = false;
 }
@@ -311,7 +326,12 @@ const fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage = async() => {
 
   const { players, count } = await fetchPlayersData(searchQuery.value);
 
-  filteredPlayers.value = players;
+  filteredPlayers.value = players.map((player: { country: string; }) => {
+    return {
+      ...player,
+      country: getCountryLabel(player.country),
+    };
+  });
   paginationRef.value.rowsNumber = count;
   isPaging.value = false;
 }
@@ -367,6 +387,11 @@ const onSearchFiltersChanged = () => {
   if (!isPaging.value) {
     fetchFilteredPlayers();
   }
+};
+
+const getCountryLabel = (countryCode: string) => {
+  const country = countriesOptions.value.find(c => c.value === countryCode);
+  return country ? country.label : countryCode;
 };
 
 watch(

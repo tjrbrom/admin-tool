@@ -49,13 +49,13 @@
       <div v-else>
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
         <p><strong>Player ID:</strong> {{ userData.id }}</p>
-        <p><strong>Name:</strong> {{ userData.name }}</p>
         <p>
           <strong>Photo:</strong>
           <img :src="userData.photoUrl" alt="Player Photo" class="player-photo" v-if="userData.photoUrl" />
         </p>
-          <p><strong>Gender:</strong> {{ userData.gender }}</p>
-        <p><strong>Country:</strong> {{ userData.country }}</p>
+        <p><strong>Name:</strong> {{ userData.name }}</p>
+        <p><strong>Gender:</strong> {{ userData.gender }}</p>
+        <p><strong>Country:</strong> {{ getCountryLabel(userData.country) }}</p>
         <p><strong>Premium:</strong> {{ userData.premium }}</p>
         <p><strong>Banned:</strong> {{ userData.banned }}</p>
         <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
@@ -99,7 +99,11 @@ const fetchUserData = async () => {
   try {
     const response = await fetch(`http://localhost:3344/admin/player?userId=${userId.value}&playerId=${playerId.value}`);
     if (response.ok) {
-      userData.value = await response.json();
+      const playerData = await response.json();
+      userData.value = {
+        ...playerData,
+        country: getCountryLabel(playerData.country),
+      };
     } else {
       console.error('Failed to fetch user data');
     }
@@ -161,6 +165,11 @@ const toggleEditMode = () => {
     saveUserData();
   }
   isEditMode.value = !isEditMode.value;
+};
+
+const getCountryLabel = (countryCode: string) => {
+  const country = countriesOptions.value.find(c => c.value === countryCode);
+  return country ? country.label : countryCode;
 };
 
 onMounted(() => {
