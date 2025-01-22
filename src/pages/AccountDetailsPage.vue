@@ -7,6 +7,13 @@
           <strong>Name: </strong>
           <input v-model="userData.name" />
         </p>
+        <p>
+          <strong>Default photo </strong>
+          <input
+            type="checkbox"
+            v-model="changeToDefaultPhoto"
+          />
+        </p>
       </div>
       <div v-else>
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
@@ -41,6 +48,7 @@ import type { Player } from 'src/model/Player';
 
 const route = useRoute();
 const isEditMode = ref(false);
+const changeToDefaultPhoto = ref(false);
 const playerId = ref(route.query.playerId as string);
 const userId = ref(route.query.userId as string);
 const userData = ref<Player>();
@@ -70,15 +78,17 @@ const saveUserData = async () => {
         name: userData.value?.name
       }),
     });
-    await fetch(`http://localhost:3344/admin/player/photo/default`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        playerId: userData.value?.id
-      }),
-    });
+    if (changeToDefaultPhoto.value) {
+      await fetch(`http://localhost:3344/admin/player/photo/default`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          playerId: userData.value?.id
+        }),
+      });
+    }
   } catch (error) {
     console.error('Error saving user data:', error);
   }
