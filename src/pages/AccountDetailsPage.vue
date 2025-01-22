@@ -1,6 +1,11 @@
 <template>
   <div class="account-details-container">
-    <h2 class="account-title">Account Details</h2>
+    <div class="header-container">
+      <button v-if="isEditMode" @click="toggleEditMode" class="back-button">
+        Back
+      </button>
+      <h2 class="account-title">Account Details</h2>
+    </div>
     <div v-if="userData">
       <div v-if="isEditMode">
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
@@ -170,6 +175,26 @@ onMounted(() => {
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #ececec;
+}
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.back-button {
+  position: absolute; /* Allow the back button to be placed outside the center */
+  left: 0; /* Aligns the button to the left of the container */
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.back-button:hover {
+  background-color: #0056b3;
 }
 .player-photo {
   display: block;
