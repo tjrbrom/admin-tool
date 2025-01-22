@@ -43,8 +43,8 @@
         </div>
         <p style="margin-top: 20px;"><strong>Premium:</strong> {{ userData.premium }}</p>
         <p><strong>Banned:</strong> {{ userData.banned }}</p>
-        <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
-        <p><strong>Created At:</strong> {{ new Date(userData.createdAt).toISOString() }}</p>
+        <p><strong>Last Login At:</strong> {{ formatDate(userData.lastLoginAt) }}</p>
+        <p><strong>Created At:</strong> {{ formatDate(userData.createdAt) }}</p>
         <button @click="saveUserData">
           Save Changes
         </button>
@@ -61,8 +61,8 @@
         <p><strong>Country:</strong> {{ getCountryLabel(userData.country) }}</p>
         <p><strong>Premium:</strong> {{ userData.premium }}</p>
         <p><strong>Banned:</strong> {{ userData.banned }}</p>
-        <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
-        <p><strong>Created At:</strong> {{ new Date(userData.createdAt).toISOString() }}</p>
+        <p><strong>Last Login At:</strong> {{ formatDate(userData.lastLoginAt) }}</p>
+        <p><strong>Created At:</strong> {{ formatDate(userData.createdAt) }}</p>
         <button @click="toggleEditMode">
           'Edit Data'
         </button>
@@ -78,6 +78,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { QSpinner } from 'quasar';
+import { formatDate } from 'src/Utils';
 import type { Player } from 'src/model/Player';
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'

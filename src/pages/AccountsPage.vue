@@ -87,6 +87,7 @@
 import type { Player } from 'src/model/Player'
 import type { PlayerQuery } from 'src/model/PlayerQuery'
 import type { Country } from 'src/model/countries';
+import { formatDate } from 'src/Utils';
 import { countries } from 'src/model/countries'
 import { getCountryLabel } from 'src/model/countries'
 import { ref, watch, onMounted  } from 'vue'
@@ -173,14 +174,14 @@ const columns = ref([
     label: 'Last Login',
     align: 'center' as 'left' | 'center' | 'right',
     field: 'lastLoginAt',
-    format: (val: string | number | Date) => new Date(val).toISOString(),
+    format: (val: string | number | Date) => formatDate(val),
   },
   {
     name: 'createdAt',
     label: 'Created At',
     align: 'center' as 'left' | 'center' | 'right',
     field: 'createdAt',
-    format: (val) => new Date(val).toISOString(),
+    format: (val) => formatDate(val),
   },
 ])
 
