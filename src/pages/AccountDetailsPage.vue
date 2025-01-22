@@ -3,6 +3,8 @@
     <h2 class="account-title">Account Details</h2>
     <div v-if="userData">
       <div v-if="isEditMode">
+        <p><strong>User ID:</strong> {{ userData.userId }}</p>
+        <p><strong>Player ID:</strong> {{ userData.id }}</p>
         <p>
           <strong>Name: </strong>
           <input v-model="userData.name" />
@@ -24,7 +26,7 @@
             map-options
           />
         </div>
-        <div class="select-container">
+        <div class="select-container" style="margin-top: 20px;">
           <strong>Country: </strong>
           <q-select
             v-model="userData.country"
@@ -34,6 +36,10 @@
             map-options
           />
         </div>
+        <p style="margin-top: 20px;"><strong>Premium:</strong> {{ userData.premium }}</p>
+        <p><strong>Banned:</strong> {{ userData.banned }}</p>
+        <p><strong>Last Login At:</strong> {{ new Date(userData.lastLoginAt).toISOString() }}</p>
+        <p><strong>Created At:</strong> {{ new Date(userData.createdAt).toISOString() }}</p>
       </div>
       <div v-else>
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
