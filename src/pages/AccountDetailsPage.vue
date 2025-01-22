@@ -61,7 +61,6 @@
         <p><strong>User ID:</strong> {{ userData.userId }}</p>
         <p><strong>Player ID:</strong> {{ userData.id }}</p>
         <p>
-          <strong>Photo:</strong>
           <img :src="userData.photoUrl" alt="Player Photo" class="player-photo" v-if="userData.photoUrl" />
         </p>
         <p><strong>Name:</strong> {{ userData.name }}</p>
