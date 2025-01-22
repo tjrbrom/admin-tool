@@ -14,12 +14,22 @@
             v-model="changeToDefaultPhoto"
           />
         </p>
-        <div class="gender-container">
+        <div class="select-container">
           <strong>Gender: </strong>
           <q-select
             v-model="userData.gender"
             :options="genderOptions"
-            class="gender-select"
+            class="select"
+            emit-value
+            map-options
+          />
+        </div>
+        <div class="select-container">
+          <strong>Country: </strong>
+          <q-select
+            v-model="userData.country"
+            :options="countriesOptions"
+            class="select"
             emit-value
             map-options
           />
@@ -55,6 +65,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { QSpinner } from 'quasar';
 import type { Player } from 'src/model/Player';
+import type { Country } from 'src/model/countries';
+import { countries } from 'src/model/countries'
 
 const route = useRoute();
 const isEditMode = ref(false);
@@ -69,6 +81,8 @@ const genderOptions = ref([
   { label: 'Non Binary', value: 'non_binary' },
   { label: 'Prefer not to say', value: 'prefer_not_say' },
 ])
+
+const countriesOptions = ref<Country[]>(countries);
 
 const fetchUserData = async () => {
   try {
@@ -116,6 +130,16 @@ const saveUserData = async () => {
         gender: userData.value?.gender
       }),
     });
+    await fetch(`http://localhost:3344/admin/player/country`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        playerId: userData.value?.id,
+        country: userData.value?.country
+      }),
+    });
   } catch (error) {
     console.error('Error saving user data:', error);
   }
@@ -150,11 +174,11 @@ onMounted(() => {
   object-fit: cover;
   border: 1px solid #ccc;
 }
-.gender-container {
+.select-container {
   display: flex;
   align-items: center;
 }
-.gender-select {
+.select {
   width: 150px;
   margin-left: 10px;
 }

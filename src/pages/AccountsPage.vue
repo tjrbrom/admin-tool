@@ -27,7 +27,7 @@
       />
       <q-select
         v-model="searchQuery.country"
-        :options="countriesRef"
+        :options="countriesOptions"
         label="Search by Country"
         outlined
         class="q-mr-md select-width"
@@ -110,7 +110,7 @@ const genderOptions = ref([
   { label: 'Prefer not to say', value: 'prefer_not_say' },
 ])
 
-const countriesRef = ref<Country[]>(countries);
+const countriesOptions = ref<Country[]>(countries);
 
 const columns = ref([
   {
