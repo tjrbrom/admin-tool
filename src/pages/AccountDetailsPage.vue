@@ -12,7 +12,12 @@
         <p><strong>Player ID:</strong> {{ userData.id }}</p>
         <p>
           <strong>Name: </strong>
-          <input v-model="userData.name" />
+          <q-input style="max-width: 300px"
+            ref="inputRef"
+            filled
+            v-model="userData.name"
+            :rules="[val => !!val || 'Field is required']"
+          />
         </p>
         <p>
           <strong>Default photo </strong>
@@ -53,7 +58,7 @@
         </p>
         <p><strong>Last Login At:</strong> {{ formatDate(userData.lastLoginAt) }}</p>
         <p><strong>Created At:</strong> {{ formatDate(userData.createdAt) }}</p>
-        <button @click="saveUserData">
+        <button @click="saveUserData" :disabled="!isFormValid">
           Save Changes
         </button>
       </div>
@@ -90,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { QSpinner } from 'quasar';
 import { formatDate } from 'src/Utils';
@@ -135,6 +140,10 @@ const fetchUserData = async () => {
 };
 
 const saveUserData = async () => {
+  if (!isFormValid.value) {
+    console.error('Form is invalid. Fix errors before saving.');
+    return;
+  }
   try {
     await fetch(`http://localhost:3344/admin/player/name`, {
       method: 'PUT',
@@ -181,6 +190,12 @@ const saveUserData = async () => {
     console.error('Error saving user data:', error);
   }
 };
+
+const isFormValid = computed(() => {
+  return (
+    userData.value?.name
+  );
+});
 
 const toggleEditMode = () => {
   isEditMode.value = !isEditMode.value;
