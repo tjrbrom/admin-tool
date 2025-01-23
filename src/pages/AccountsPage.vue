@@ -234,6 +234,8 @@ interface RequestProps {
 function onPaginationRequest (props: RequestProps) {
   const { page, rowsPerPage } = props.pagination
 
+  searchQuery.value.isPreviousPage = false
+
   if (paginationRef.value.rowsPerPage != rowsPerPage) {
     searchQuery.value.isRowNumberChanged = true
     paginationRef.value.page = page
