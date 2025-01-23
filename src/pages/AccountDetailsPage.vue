@@ -65,7 +65,7 @@
         </p>
         <p><strong>Name:</strong> {{ userData.name }}</p>
         <p><strong>Gender:</strong> {{ userData.gender }}</p>
-        <p><strong>Country:</strong> {{ getCountryLabel(userData.country) }}</p>
+        <p><strong>Country:</strong> {{ getCountryLabelFromCode(userData.country) }}</p>
         <p><strong>Premium: </strong>
           <span :class="{ 'text-green': userData.premium, 'text-red': !userData.premium }">
             {{ formatPremium(userData.premium) }}
@@ -99,7 +99,7 @@ import { formatBanned } from 'src/Utils';
 import type { Player } from 'src/model/Player';
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
-import { getCountryLabel } from 'src/model/countries'
+import { getCountryLabelFromCode, getCountryCodeFromLabel } from 'src/model/countries'
 
 const route = useRoute();
 const isEditMode = ref(false);
@@ -124,7 +124,7 @@ const fetchUserData = async () => {
       const playerData = await response.json();
       userData.value = {
         ...playerData,
-        country: getCountryLabel(playerData.country),
+        country: getCountryLabelFromCode(playerData.country),
       };
     } else {
       console.error('Failed to fetch user data');
@@ -174,7 +174,7 @@ const saveUserData = async () => {
       },
       body: JSON.stringify({
         playerId: userData.value?.id,
-        country: userData.value?.country
+        country: getCountryCodeFromLabel(userData.value?.country ?? '')
       }),
     });
   } catch (error) {

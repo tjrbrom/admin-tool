@@ -10,7 +10,12 @@ export const countries: Country[] = [
   { label: 'Greece', value: 'GR' },
 ];
 
-export const getCountryLabel = (countryCode: string) => {
+export const getCountryLabelFromCode = (countryCode: string) => {
   const country = countries.find(c => c.value === countryCode);
   return country ? country.label : countryCode;
+};
+
+export const getCountryCodeFromLabel = (countryLabel: string) => {
+  const country = countries.find(c => c.label === countryLabel);
+  return country ? country.value : countryLabel;
 };

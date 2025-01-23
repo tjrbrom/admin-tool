@@ -91,7 +91,7 @@ import { formatDate } from 'src/Utils';
 import { formatPremium } from 'src/Utils';
 import { formatBanned } from 'src/Utils';
 import { countries } from 'src/model/countries'
-import { getCountryLabel } from 'src/model/countries'
+import { getCountryLabelFromCode } from 'src/model/countries'
 import { ref, watch, onMounted  } from 'vue'
 import { useRouter } from 'vue-router';
 
@@ -206,6 +206,7 @@ const searchQuery = ref<PlayerQuery>({
   createdAt: null,
   limit: paginationRef.value.rowsPerPage,
   isPreviousPage: null,
+  isRowNumberChanged: null,
 })
 
 const filteredPlayers = ref<Player[]>([])
@@ -234,11 +235,14 @@ function onPaginationRequest (props: RequestProps) {
   const { page, rowsPerPage } = props.pagination
 
   if (paginationRef.value.rowsPerPage != rowsPerPage) {
+    searchQuery.value.isRowNumberChanged = true
     paginationRef.value.page = page
     paginationRef.value.rowsPerPage = rowsPerPage
     console.log("fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage")
     fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage()
     return
+  } else {
+    searchQuery.value.isRowNumberChanged = false
   }
 
   if (paginationRef.value.page > page) {
@@ -266,7 +270,7 @@ const fetchFilteredPlayers = async() => {
   filteredPlayers.value = players.map((player: { country: string; }) => {
     return {
       ...player,
-      country: getCountryLabel(player.country),
+      country: getCountryLabelFromCode(player.country),
     };
   });
   paginationRef.value.rowsNumber = count;
@@ -289,7 +293,7 @@ const fetchPlayersForPaging_casePreviousPage = async() => {
   filteredPlayers.value = players.reverse().map((player: { country: string; }) => {
     return {
       ...player,
-      country: getCountryLabel(player.country),
+      country: getCountryLabelFromCode(player.country),
     };
   });
   paginationRef.value.rowsNumber = count;
@@ -312,7 +316,7 @@ const fetchPlayersForPaging_caseNextPage = async() => {
   filteredPlayers.value = players.map((player: { country: string; }) => {
     return {
       ...player,
-      country: getCountryLabel(player.country),
+      country: getCountryLabelFromCode(player.country),
     };
   });
   paginationRef.value.rowsNumber = count;
@@ -335,7 +339,7 @@ const fetchPlayersForPaging_caseDifferentNumberOfRowsPerPage = async() => {
   filteredPlayers.value = players.map((player: { country: string; }) => {
     return {
       ...player,
-      country: getCountryLabel(player.country),
+      country: getCountryLabelFromCode(player.country),
     };
   });
   paginationRef.value.rowsNumber = count;
