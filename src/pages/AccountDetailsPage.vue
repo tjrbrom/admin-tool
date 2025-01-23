@@ -8,8 +8,8 @@
     </div>
     <div v-if="userData">
       <div v-if="isEditMode">
-        <p><strong>User ID:</strong> {{ userData.userId }}</p>
-        <p><strong>Player ID:</strong> {{ userData.id }}</p>
+        <p><strong>User ID (account):</strong> {{ userData.userId }}</p>
+        <p><strong>Player ID (specific game):</strong> {{ userData.id }}</p>
         <p>
           <strong>Name: </strong>
           <q-input style="max-width: 300px"
@@ -63,8 +63,8 @@
         </button>
       </div>
       <div v-else>
-        <p><strong>User ID:</strong> {{ userData.userId }}</p>
-        <p><strong>Player ID:</strong> {{ userData.id }}</p>
+        <p><strong>User ID (account):</strong> {{ userData.userId }}</p>
+        <p><strong>Player ID (specific game):</strong> {{ userData.id }}</p>
         <p>
           <img :src="userData.photoUrl" alt="Player Photo" class="player-photo" v-if="userData.photoUrl" />
         </p>
