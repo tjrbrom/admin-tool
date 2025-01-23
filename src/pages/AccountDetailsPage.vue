@@ -101,6 +101,7 @@ import { QSpinner } from 'quasar';
 import { formatDate } from 'src/Utils';
 import { formatPremium } from 'src/Utils';
 import { formatBanned } from 'src/Utils';
+import { BASE_URL } from 'src/common';
 import type { Player } from 'src/model/Player';
 import type { Country } from 'src/model/countries';
 import { countries } from 'src/model/countries'
@@ -124,7 +125,7 @@ const countriesOptions = ref<Country[]>(countries);
 
 const fetchUserData = async () => {
   try {
-    const response = await fetch(`http://localhost:3344/admin/player?userId=${userId.value}&playerId=${playerId.value}`);
+    const response = await fetch(`${BASE_URL}/player?userId=${userId.value}&playerId=${playerId.value}`);
     if (response.ok) {
       const playerData = await response.json();
       userData.value = {
@@ -145,7 +146,7 @@ const saveUserData = async () => {
     return;
   }
   try {
-    await fetch(`http://localhost:3344/admin/player/name`, {
+    await fetch(`${BASE_URL}/player/name`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -156,7 +157,7 @@ const saveUserData = async () => {
       }),
     });
     if (changeToDefaultPhoto.value) {
-      await fetch(`http://localhost:3344/admin/player/photo/default`, {
+      await fetch(`${BASE_URL}/player/photo/default`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -166,7 +167,7 @@ const saveUserData = async () => {
         }),
       });
     }
-    await fetch(`http://localhost:3344/admin/player/gender`, {
+    await fetch(`${BASE_URL}/player/gender`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -176,7 +177,7 @@ const saveUserData = async () => {
         gender: userData.value?.gender
       }),
     });
-    await fetch(`http://localhost:3344/admin/player/country`, {
+    await fetch(`${BASE_URL}/player/country`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

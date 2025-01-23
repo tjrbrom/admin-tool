@@ -90,6 +90,7 @@ import type { Country } from 'src/model/countries';
 import { formatDate } from 'src/Utils';
 import { formatPremium } from 'src/Utils';
 import { formatBanned } from 'src/Utils';
+import { BASE_URL } from 'src/common';
 import { countries } from 'src/model/countries'
 import { getCountryLabelFromCode } from 'src/model/countries'
 import { ref, watch, onMounted  } from 'vue'
@@ -358,13 +359,13 @@ const fetchPlayersData = async (query: PlayerQuery) => {
     }
     console.log(queryParams.toString())
     const [playersResponse, countResponse] = await Promise.all([
-      fetch(`http://localhost:3344/admin/players?${queryParams.toString()}`, {
+      fetch(`${BASE_URL}/players?${queryParams.toString()}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       }),
-      fetch('http://localhost:3344/admin/players/count', {
+      fetch(`${BASE_URL}/players/count`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
