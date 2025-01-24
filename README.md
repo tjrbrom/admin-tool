@@ -1,6 +1,6 @@
 # Admin Tool
 
-A simple and intuitive admin tool built with Vue 3 and Quasar Framework to manage user data effectively. This tool provides essential features for viewing, editing, and updating user account information via API integration.
+Playing around with Vue 3 and Quasar Framework. This is a simple and intuitive admin tool to manage user data effectively.
 
 ## Features
 
