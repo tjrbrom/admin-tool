@@ -1,40 +1,16 @@
-# Admin tool (admin-tool)
+# Admin Tool
 
-Admin tool
+A simple and intuitive admin tool built with Vue 3 and Quasar Framework to manage user data effectively. This tool provides essential features for viewing, editing, and updating user account information via API integration.
 
-## Install the dependencies
-```bash
-yarn
-# or
-npm install
-```
+## Features
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
+- View detailed user information including IDs, name, gender, country, premium status, and more.
+- Edit user details with real-time validation and dropdown selections.
+- API integration for fetching and saving user data.
 
+## Technologies
 
-### Lint the files
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-
-### Format the files
-```bash
-yarn format
-# or
-npm run format
-```
-
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+- **Vue 3**
+- **Quasar Framework**
+- **TypeScript**
+- **Fetch API**
