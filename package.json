@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Admin tool",
   "productName": "Admin tool",
-  "author": "nikthem <nikos.t@tamasenco.com>",
+  "author": "nikthem",
   "type": "module",
   "private": true,
   "scripts": {
