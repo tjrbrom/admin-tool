@@ -1,6 +1,6 @@
 # Admin Tool
 
-Playing around with Vue 3 and Quasar Framework. This is a simple and intuitive user data management admin tool.
+Playing around with Vue 3 and Quasar. This is a simple and intuitive user data management admin tool.
 
 ## Features
 
